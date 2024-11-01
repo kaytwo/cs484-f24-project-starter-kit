@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Welcome from "../components/Welcome.astro";
+if (!Astro.locals.auth().userId) {
+    return Astro.redirect("/");
+}
+
+const user = await Astro.locals.currentUser();
+---
+
+<Layout title="Welcome to my project.">
+    <main>
+        <Welcome />
+    </main>
+</Layout>
