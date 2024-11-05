@@ -1,15 +1,36 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Welcome from "../components/Welcome.astro";
+
+import { db, Comment } from "astro:db";
+import { Code } from "astro:components";
+
 if (!Astro.locals.auth().userId) {
-    return Astro.redirect("/");
+  return Astro.redirect("/");
 }
 
 const user = await Astro.locals.currentUser();
+
+const comments = await db.select().from(Comment);
 ---
 
 <Layout title="Welcome to my project.">
-    <main>
-        <Welcome />
-    </main>
+  <main>
+    <Welcome />
+  </main>
+  <section>
+    <h2>Comments</h2>
+    <ul>
+      {
+        comments.map((comment) => (
+          <li>{`${comment.author} says: ${comment.body}`}</li>
+        ))
+      }
+    </ul>
+    <form action="/api/comments" method="POST">
+      <label for="comment">Comment:</label>
+      <textarea id="comment" name="comment"></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </section>
 </Layout>
